@@ -17,6 +17,22 @@ class Task {
     this.updatedAt,
   });
 
+  static DateTime _parseDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return DateTime.now();
+    }
+    try {
+      return DateTime.parse(dateString);
+    } catch (e) {
+      try {
+        final cleanedDate = dateString.replaceAll(RegExp(r'\s\+\d{4}\s\w+$'), '');
+        return DateTime.parse(cleanedDate);
+      } catch (e) {
+        return DateTime.now();
+      }
+    }
+  }
+
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
       id: json['id'] as int? ?? 0,
@@ -24,12 +40,8 @@ class Task {
       description: json['description'] as String? ?? '',
       status: json['status'] as String? ?? 'pending',
       ownerId: json['owner_id'] as int? ?? 0,
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at'] as String)
-          : DateTime.now(),
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'] as String)
-          : null,
+      createdAt: _parseDate(json['created_at'] as String?),
+      updatedAt: _parseDate(json['updated_at'] as String?),
     );
   }
 

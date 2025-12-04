@@ -6,6 +6,7 @@ import 'screens/login_screen.dart';
 import 'screens/task_list_screen.dart';
 import 'services/api_service.dart';
 import 'services/secure_storage_service.dart';
+import 'theme/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,12 +49,21 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         title: 'Task Service',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-        ),
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
         home: Consumer<AuthProvider>(
           builder: (context, authProvider, _) {
+            print('Main Consumer: isInitialized=${authProvider.isInitialized}, isAuthenticated=${authProvider.isAuthenticated}');
+            
+            if (!authProvider.isInitialized) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            
             if (authProvider.isAuthenticated) {
               return const TaskListScreen();
             }

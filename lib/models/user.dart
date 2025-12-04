@@ -13,15 +13,29 @@ class User {
     required this.createdAt,
   });
 
+  static DateTime _parseDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return DateTime.now();
+    }
+    try {
+      return DateTime.parse(dateString);
+    } catch (e) {
+      try {
+        final cleanedDate = dateString.replaceAll(RegExp(r'\s\+\d{4}\s\w+$'), '');
+        return DateTime.parse(cleanedDate);
+      } catch (e) {
+        return DateTime.now();
+      }
+    }
+  }
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',
-      avatar: json['avatar'] as String?,
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at'] as String)
-          : DateTime.now(),
+      avatar: json['avatarUrl'] as String?,
+      createdAt: _parseDate(json['createdAt'] as String?),
     );
   }
 

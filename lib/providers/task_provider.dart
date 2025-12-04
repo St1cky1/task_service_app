@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
 import '../models/task.dart';
 import '../services/api_service.dart';
 
@@ -30,9 +31,13 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      print('=== Fetching tasks (status: $status) ===');
       _tasks = await _apiService.getTasks(status: status);
+      _tasks.sort((a, b) => b.id.compareTo(a.id));
+      print('✓ Fetched ${_tasks.length} tasks: ${_tasks.map((t) => t.id).toList()}');
       _error = null;
     } catch (e) {
+      print('✗ Error fetching tasks: $e');
       _error = e.toString();
     } finally {
       _isLoading = false;
@@ -51,16 +56,21 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      print('=== Creating task: title=$title, status=$status, ownerId=$ownerId ===');
       final newTask = await _apiService.createTask(
         title: title,
         description: description,
         status: status,
         ownerId: ownerId,
       );
+      print('✓ Task created with id: ${newTask.id}');
       _tasks.add(newTask);
+      _tasks.sort((a, b) => b.id.compareTo(a.id));
+      print('✓ Tasks after creation (count: ${_tasks.length}): ${_tasks.map((t) => t.id).toList()}');
       _error = null;
     } catch (e) {
-      _error = e.toString();
+      print('✗ Error creating task: $e');
+      _error = 'Error: $e';
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -88,9 +98,12 @@ class TaskProvider extends ChangeNotifier {
       final index = _tasks.indexWhere((task) => task.id == taskId);
       if (index != -1) {
         _tasks[index] = updatedTask;
+        _tasks.sort((a, b) => b.id.compareTo(a.id));
+        developer.log('Tasks after update: ${_tasks.map((t) => t.id).toList()}');
       }
       _error = null;
     } catch (e) {
+      developer.log('Error updating task: $e');
       _error = e.toString();
     } finally {
       _isLoading = false;
