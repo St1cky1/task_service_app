@@ -260,10 +260,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
                                                   ),
                                                   child: Text(
                                                     _formatStatus(task.status),
-                                                    style: const TextStyle(
+                                                    style: TextStyle(
                                                       fontSize: 12,
                                                       fontWeight:
                                                           FontWeight.w600,
+                                                      color: _getStatusTextColor(task.status),
                                                     ),
                                                   ),
                                                 ),
@@ -346,6 +347,19 @@ class _TaskListScreenState extends State<TaskListScreen> {
         return Colors.green.shade100;
       default:
         return Colors.grey.shade100;
+    }
+  }
+
+  Color _getStatusTextColor(String status) {
+    switch (status) {
+      case 'pending':
+        return Colors.orange.shade900;
+      case 'in_progress':
+        return Colors.blue.shade900;
+      case 'completed':
+        return Colors.green.shade900;
+      default:
+        return Colors.grey.shade900;
     }
   }
 }

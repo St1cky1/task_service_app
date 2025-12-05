@@ -33,26 +33,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    const Color(0xFF0F172A),
-                    const Color(0xFF1E293B),
-                  ]
-                : [
-                    Colors.blue.shade50,
-                    Colors.purple.shade50,
-                  ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                    ? [
+                        const Color(0xFF0F172A),
+                        const Color(0xFF1E293B),
+                      ]
+                    : [
+                        Colors.blue.shade50,
+                        Colors.purple.shade50,
+                      ],
+              ),
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Consumer<AuthProvider>(
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Consumer<AuthProvider>(
               builder: (context, authProvider, _) {
                 if (authProvider.isAuthenticated) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -229,8 +232,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 );
               },
             ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
